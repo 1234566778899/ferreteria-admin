@@ -1,9 +1,16 @@
-# Ferretería · Inventario
+# Ferretería · Inventario (J. Nieto Multiservicios)
 
-Control de inventario para una **ferretería en Perú** (por ahora solo inventario, sin punto de venta): productos con unidad base y presentación, entradas, salidas, conteo físico, kardex y un panel con valor del inventario, stock bajo y productos sin movimiento.
+Control de inventario para **J. Nieto Multiservicios**, una ferretería en Perú (por ahora solo inventario, sin punto de venta): productos con unidad base y presentación, entradas, salidas, conteo físico, kardex y un panel con valor del inventario, stock bajo y productos sin movimiento.
 
 - Stack: Vite 8 + React 19 + TypeScript + Tailwind 4 + TanStack Query 5 + React Router 8 (modo data, rutas lazy) + Supabase. Iconos lucide, gráficos recharts.
 - El diseño viene de `../botica-pos` (y este del admin de `../cielo-online/admin`): mismos componentes propios en `src/components/ui`, tokens en `src/index.css`. No uses Polaris. Marca naranja `#c2410c`. Gráfico de entradas/salidas: `#2563eb` / `#e8590c` (validados con el script de dataviz).
+- **Logo** en `public/`:
+  - `logo.png`: logo completo, fondo transparente. Va en la pantalla de acceso y como encabezado al imprimir documentos (`print:block`).
+  - `icon.png`: la "J" en un cuadrado blanco. Va en la barra lateral; el logo completo verde no se lee sobre el fondo oscuro.
+  - `favicon.png`.
+  - El original es `~/Downloads/logo.png`. Para regenerarlos se recorta por el canal alfa con PIL; si lo conviertes a RGB, el fondo transparente sale negro.
+- El color de la app sigue en naranja; el usuario aún no pidió cambiarlo al verde del logo.
+- **Repositorio**: https://github.com/1234566778899/ferreteria-admin (público, rama `main`). Listo para Vercel con `vercel.json`, que redirige a la SPA; variables `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`.
 - Credenciales del proyecto de Supabase (desarrollo) en `CLAUDE.local.md` (en `.gitignore`, nunca copiarlas a archivos versionados). La app solo usa la publishable key (`.env.local`).
 
 ## Comandos
@@ -13,8 +20,18 @@ npm run dev      # http://localhost:5183 (5180 admin Cielo, 5181 botica, 5174 ot
 npm run build    # tsc -b && vite build
 npm run lint     # oxlint
 supabase db push --db-url '<cadena del pooler en CLAUDE.local.md>'   # aplica supabase/migrations
-psql '<cadena>' -f supabase/seed.sql                                  # datos de ejemplo (solo base vacía)
+psql '<cadena>' -f supabase/seed.sql                                  # datos de ejemplo (solo base vacía; NO usar en producción)
 ```
+
+## Estado de la base (2026-09-25)
+
+- A pedido del usuario la base se **limpió**: sin productos, documentos, movimientos ni proveedores, y la numeración reiniciada.
+- Se conservan:
+  - El administrador `jnietoodar@gmail.com`, dueño del negocio.
+  - Las 11 categorías: Construcción, Fierros y alambres, Gasfitería, Electricidad, Pinturas, Herramientas manuales, Herramientas eléctricas, Tornillería y fijación, Cerrajería, Adhesivos y selladores, Seguridad.
+  - El negocio "Multiservicios Juan Nieto".
+- Los productos reales se cargarán después; el usuario puede pasar una lista en Excel o PDF como se hizo en `../botica-pos`. El stock de cada producto entra con una entrada "Inventario inicial".
+- No vuelvas a correr `seed.sql` en esta base: mezclaría datos de ejemplo con los reales.
 
 ## Dominio
 
