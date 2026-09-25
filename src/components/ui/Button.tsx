@@ -30,22 +30,25 @@ const base = "inline-flex shrink-0 items-center font-[550] whitespace-nowrap tra
 export const Button = forwardRef<HTMLButtonElement, ButtonProps | LinkButtonProps>(function Button(props, ref) {
   const { variant = "secondary", size = "sm", icon: Icon, loading, className, children } = props;
   const classes = cn(base, variants[variant], sizes[size], className);
+  // En la barra de la página (celular) los botones secundarios con icono muestran solo el icono.
+  const collapsible = Boolean(Icon) && (variant === "secondary" || variant === "plain" || variant === "tertiary");
+  const label = size === "icon" ? String(children ?? "") : collapsible && typeof children === "string" ? children : undefined;
   const content = (
     <>
       {loading ? <Loader2 className="size-3.5 animate-spin" /> : Icon && <Icon className={size === "icon" ? "size-4" : "size-3.5"} strokeWidth={2} />}
-      {size !== "icon" && children}
+      {size !== "icon" && children != null && <span data-collapsible={collapsible || undefined}>{children}</span>}
     </>
   );
   if ("to" in props && props.to) {
     return (
-      <Link to={props.to} target={props.target} className={classes} aria-label={size === "icon" ? String(children ?? "") : undefined}>
+      <Link to={props.to} target={props.target} className={classes} aria-label={label}>
         {content}
       </Link>
     );
   }
   const { variant: _v, size: _s, icon: _i, loading: _l, className: _c, children: _ch, ...rest } = props as ButtonProps;
   return (
-    <button ref={ref} type="button" className={classes} disabled={rest.disabled || loading} aria-label={size === "icon" ? String(children ?? "") : undefined} {...rest}>
+    <button ref={ref} type="button" className={classes} disabled={rest.disabled || loading} aria-label={label} {...rest}>
       {content}
     </button>
   );

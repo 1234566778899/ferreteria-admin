@@ -51,14 +51,15 @@ export function DocDetailPage() {
           </Card>
         }
       >
-        <Card padded={false}>
+        <Card padded={false} className="overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="h-9 border-b border-border bg-surface-muted text-[12px] text-ink-secondary">
-                <th className="pl-4">Producto</th><th className="text-right">Cantidad</th>
-                {(showCost || isSale) && <th className="text-right">{isSale ? "Precio" : "Costo"}</th>}
-                {(showCost || isSale) && <th className="text-right">Subtotal</th>}
-                <th className="pr-4 text-right">Saldo</th>
+                <th className="pl-4">Producto</th><th className="px-3 text-right">Cantidad</th>
+                {(showCost || isSale) && <th className="px-3 text-right max-sm:hidden print:table-cell">{isSale ? "Precio" : "Costo"}</th>}
+                {(showCost || isSale) && <th className="px-3 text-right">Subtotal</th>}
+                <th className="pr-4 pl-3 text-right max-sm:hidden print:table-cell">Saldo</th>
               </tr>
             </thead>
             <tbody>
@@ -66,22 +67,23 @@ export function DocDetailPage() {
                 const unitAmount = isSale ? Number(l.unit_price ?? 0) : Number(l.unit_cost);
                 return (
                   <tr key={l.id} className="h-12 border-b border-border last:border-0">
-                    <td className="pl-4">
+                    <td className="min-w-[150px] py-1.5 pl-4">
                       <Link to={`/productos/${l.product_id}`} className="font-[550] hover:underline">{l.product_name}</Link>
                       <p className="text-[12px] text-ink-secondary">{[l.code, l.brand, l.model].filter(Boolean).join(" · ")}</p>
                     </td>
-                    <td className={`text-right font-[550] tabular-nums whitespace-nowrap ${Number(l.quantity) > 0 ? "text-success" : "text-critical-strong"}`}>
+                    <td className={`px-3 text-right font-[550] tabular-nums whitespace-nowrap ${Number(l.quantity) > 0 ? "text-success" : "text-critical-strong"}`}>
                       {Number(l.quantity) > 0 ? "+" : ""}{formatQty(l.quantity, l.unit)}
                       {l.entered_unit && l.entered_unit !== l.unit && <span className="block text-[11px] font-normal text-ink-tertiary">{formatQty(l.entered_quantity)} {l.entered_unit}</span>}
                     </td>
-                    {(showCost || isSale) && <td className="text-right tabular-nums">{formatMoney(unitAmount)}</td>}
-                    {(showCost || isSale) && <td className="text-right tabular-nums">{formatMoney(Math.abs(Number(l.quantity)) * unitAmount)}</td>}
-                    <td className="pr-4 text-right text-ink-secondary tabular-nums">{formatQty(l.balance, l.unit)}</td>
+                    {(showCost || isSale) && <td className="px-3 text-right whitespace-nowrap tabular-nums max-sm:hidden print:table-cell">{formatMoney(unitAmount)}</td>}
+                    {(showCost || isSale) && <td className="px-3 text-right whitespace-nowrap tabular-nums">{formatMoney(Math.abs(Number(l.quantity)) * unitAmount)}</td>}
+                    <td className="pr-4 pl-3 text-right whitespace-nowrap text-ink-secondary tabular-nums max-sm:hidden print:table-cell">{formatQty(l.balance, l.unit)}</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          </div>
           {(showCost || isSale) && (
             <div className="flex justify-between border-t border-border px-4 py-3 text-[15px] font-[650]">
               <span>Total</span><span className="tabular-nums">{formatMoney(isSale ? doc.total_price : doc.total_cost)}</span>

@@ -69,22 +69,22 @@ export function DashboardPage() {
         <>
           <div className="flex rounded-[10px] bg-surface-pressed/70 p-0.5">
             {[7, 30, 90].map((d) => (
-              <button key={d} type="button" onClick={() => setDays(d)} className={cn("h-7 rounded-[8px] px-2.5 text-[12px] font-[550]", days === d ? "bg-white shadow-button" : "text-ink-secondary")}>{d} días</button>
+              <button key={d} type="button" onClick={() => setDays(d)} className={cn("h-7 rounded-[8px] px-2.5 text-[12px] font-[550]", days === d ? "bg-white shadow-button" : "text-ink-secondary")}>{d}<span className="max-sm:hidden"> días</span><span className="sm:hidden"> d</span></button>
             ))}
           </div>
           <Button icon={ArrowDownToLine} to="/entradas/nueva">Entrada</Button>
           <Button variant="brand" icon={ArrowUpFromLine} to="/salidas/nueva">Salida</Button>
         </>
       }>
-      <h1 className="mb-4 px-1 text-[20px] font-[650]">Hola, {fullName(staff.first_name) || "equipo"} 👋</h1>
+      <h1 className="mb-4 px-1 text-[18px] font-[650] sm:text-[20px]">Hola, {fullName(staff.first_name) || "equipo"} 👋</h1>
 
       <Card padded={false} className="grid grid-cols-2 gap-px overflow-hidden bg-border lg:grid-cols-4 [&>*]:bg-white">
         {isLoading || !data ? Array.from({ length: 4 }, (_, i) => <div key={i} className="px-4 py-3"><Skeleton className="h-3 w-20" /><Skeleton className="mt-2 h-6 w-28" /></div>) : (
           <>
-            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Valor del inventario (costo)</p><p className="mt-1 text-[22px] font-[650] tabular-nums">{formatMoney(data.totals.value_cost)}</p><p className="text-[11px] text-ink-tertiary">{data.totals.products} productos activos</p></div>
-            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Valor a precio de venta</p><p className="mt-1 text-[22px] font-[650] tabular-nums">{formatMoney(data.totals.value_price)}</p><p className="text-[11px] text-ink-tertiary">Margen potencial {formatMoney(potential)}</p></div>
-            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Ventas ({days} días)</p><p className="mt-1 text-[22px] font-[650] tabular-nums">{formatMoney(data.period.sales)}</p><p className="text-[11px] text-ink-tertiary">Utilidad bruta {formatMoney(Number(data.period.sales) - Number(data.period.sales_cost))}</p></div>
-            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Compras ({days} días)</p><p className="mt-1 text-[22px] font-[650] tabular-nums">{formatMoney(data.period.entries_cost)}</p><p className="text-[11px] text-ink-tertiary">Mermas {formatMoney(data.period.losses)}</p></div>
+            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Valor del inventario (costo)</p><p className="mt-1 text-[17px] font-[650] tabular-nums sm:text-[22px]">{formatMoney(data.totals.value_cost)}</p><p className="text-[11px] text-ink-tertiary">{data.totals.products} productos activos</p></div>
+            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Valor a precio de venta</p><p className="mt-1 text-[17px] font-[650] tabular-nums sm:text-[22px]">{formatMoney(data.totals.value_price)}</p><p className="text-[11px] text-ink-tertiary">Margen potencial {formatMoney(potential)}</p></div>
+            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Ventas ({days} días)</p><p className="mt-1 text-[17px] font-[650] tabular-nums sm:text-[22px]">{formatMoney(data.period.sales)}</p><p className="text-[11px] text-ink-tertiary">Utilidad bruta {formatMoney(Number(data.period.sales) - Number(data.period.sales_cost))}</p></div>
+            <div className="px-4 py-3"><p className="text-[12px] text-ink-secondary">Compras ({days} días)</p><p className="mt-1 text-[17px] font-[650] tabular-nums sm:text-[22px]">{formatMoney(data.period.entries_cost)}</p><p className="text-[11px] text-ink-tertiary">Mermas {formatMoney(data.period.losses)}</p></div>
           </>
         )}
       </Card>
@@ -101,13 +101,13 @@ export function DashboardPage() {
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
         <Card>
           <CardHeader title="Entradas y salidas por día" description="Valorizadas a costo" />
-          <div className="h-[380px]" role="img" aria-label="Gráfico de entradas y salidas por día">
+          <div className="h-[260px] sm:h-[380px]" role="img" aria-label="Gráfico de entradas y salidas por día">
             {data && (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data.series} margin={{ top: 8, right: 8, bottom: 0, left: 0 }} barGap={2}>
                   <CartesianGrid vertical={false} stroke="#ebebeb" />
                   <XAxis dataKey="date" tickFormatter={dayLabel} tick={{ fontSize: 11, fill: "#616161" }} axisLine={false} tickLine={false} minTickGap={16} />
-                  <YAxis tickFormatter={(v) => `S/ ${v >= 1000 ? `${Math.round(v / 100) / 10}k` : v}`} tick={{ fontSize: 11, fill: "#616161" }} axisLine={false} tickLine={false} width={60} />
+                  <YAxis tickFormatter={(v) => `S/ ${v >= 1000 ? `${Math.round(v / 100) / 10}k` : v}`} tick={{ fontSize: 11, fill: "#616161" }} axisLine={false} tickLine={false} width={52} />
                   <Tooltip content={<ChartTooltip />} cursor={{ fill: "rgba(0,0,0,.04)" }} />
                   <Legend verticalAlign="top" align="right" height={28} iconType="circle" iconSize={8} formatter={(v) => <span className="text-[12px] text-ink-secondary">{v === "entradas" ? "Entradas" : "Salidas"}</span>} />
                   <Bar dataKey="entradas" fill={IN} radius={[4, 4, 0, 0]} maxBarSize={14} />
@@ -140,7 +140,7 @@ export function DashboardPage() {
                 <Link to={`/productos/${p.id}`} className="flex items-center gap-3 py-2 hover:text-brand">
                   <span className="min-w-0 flex-1"><span className="block truncate font-[550]">{productLabel(p)}</span><span className="text-[12px] text-ink-secondary">{p.supplier_name ?? p.code}</span></span>
                   <span className={cn("text-[12px] tabular-nums whitespace-nowrap", Number(p.stock) <= 0 ? "font-[650] text-critical-strong" : "text-warning")}>{Number(p.stock) <= 0 ? "Agotado" : formatQty(p.stock, p.unit)}</span>
-                  <span className="w-20 text-right text-[12px] whitespace-nowrap text-ink-tertiary">mín. {formatQty(p.min_stock)}</span>
+                  <span className="w-16 text-right text-[12px] whitespace-nowrap text-ink-tertiary sm:w-20">mín. {formatQty(p.min_stock)}</span>
                 </Link>
               </li>
             ))}
@@ -155,7 +155,7 @@ export function DashboardPage() {
                 <span className="w-5 text-center text-[12px] font-[650] text-ink-tertiary">{i + 1}</span>
                 <span className="min-w-0 flex-1 truncate font-[550]">{productLabel(p)}</span>
                 <span className="text-[12px] whitespace-nowrap text-ink-secondary tabular-nums">{formatQty(p.quantity, p.unit)}</span>
-                <span className="w-24 text-right tabular-nums">{formatMoney(p.value)}</span>
+                <span className="text-right whitespace-nowrap tabular-nums sm:w-24">{formatMoney(p.value)}</span>
               </li>
             ))}
           </ol>
@@ -169,8 +169,8 @@ export function DashboardPage() {
                 <Link to={`/productos/${p.id}`} className="flex items-center gap-3 py-2 hover:text-brand">
                   <span className="min-w-0 flex-1"><span className="block truncate font-[550]">{productLabel(p)}</span>
                     <span className="text-[12px] text-ink-secondary">{p.last_exit_at ? `Última salida ${formatShortDate(p.last_exit_at)}` : "Nunca ha salido"}</span></span>
-                  <span className="text-[12px] whitespace-nowrap text-ink-secondary tabular-nums">{formatQty(p.stock, p.unit)}</span>
-                  <span className="w-24 text-right tabular-nums">{formatMoney(p.value_cost)}</span>
+                  <span className="text-[12px] whitespace-nowrap text-ink-secondary tabular-nums max-sm:hidden">{formatQty(p.stock, p.unit)}</span>
+                  <span className="text-right whitespace-nowrap tabular-nums sm:w-24">{formatMoney(p.value_cost)}</span>
                 </Link>
               </li>
             ))}
@@ -181,13 +181,13 @@ export function DashboardPage() {
           <ul className="divide-y divide-border">
             {data?.recent.map((d) => (
               <li key={d.id}>
-                <Link to={`/movimientos/${d.id}`} className="flex flex-wrap items-center gap-3 py-2 hover:text-brand">
-                  <span className="w-14 font-[650]">#{d.number}</span>
+                <Link to={`/movimientos/${d.id}`} className="flex items-center gap-3 py-2 hover:text-brand">
+                  <span className="w-12 shrink-0 font-[650] sm:w-14">#{d.number}</span>
                   <Badge tone={kindTone[d.kind]}>{kindLabels[d.kind]}</Badge>
-                  <span className="w-40 text-ink-secondary">{reasonLabels[d.reason]}</span>
-                  <span className="min-w-0 flex-1 truncate text-[12px] text-ink-secondary">{[d.supplier_name, d.party, d.reference, d.user_name].filter(Boolean).join(" · ")}</span>
-                  <span className="text-[12px] text-ink-secondary">{formatDateTime(d.created_at)}</span>
-                  {d.voided_at ? <Badge tone="critical">Anulado</Badge> : <span className="w-24 text-right tabular-nums">{formatMoney(d.reason === "venta" ? d.total_price : d.total_cost)}</span>}
+                  <span className="min-w-0 flex-1 truncate text-ink-secondary sm:w-40 sm:flex-none">{reasonLabels[d.reason]}</span>
+                  <span className="hidden min-w-0 flex-1 truncate text-[12px] text-ink-secondary md:block">{[d.supplier_name, d.party, d.reference, d.user_name].filter(Boolean).join(" · ")}</span>
+                  <span className="text-[12px] whitespace-nowrap text-ink-secondary max-sm:hidden">{formatDateTime(d.created_at)}</span>
+                  {d.voided_at ? <Badge tone="critical">Anulado</Badge> : <span className="text-right whitespace-nowrap tabular-nums sm:w-24">{formatMoney(d.reason === "venta" ? d.total_price : d.total_cost)}</span>}
                 </Link>
               </li>
             ))}

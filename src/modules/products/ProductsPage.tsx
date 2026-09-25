@@ -60,27 +60,30 @@ export function ProductsPage() {
   const totals = useMemo(() => ({ cost: rows.reduce((n, p) => n + Number(p.value_cost), 0), price: rows.reduce((n, p) => n + Number(p.value_price), 0) }), [rows]);
 
   const columns: Column<ProductStock>[] = [
-    { key: "code", header: "Código", className: "whitespace-nowrap font-mono text-[12px] text-ink-secondary", render: (p) => p.code },
+    { key: "code", header: "Código", hideBelow: "md", className: "whitespace-nowrap font-mono text-[12px] text-ink-secondary", render: (p) => p.code },
     {
       key: "name", header: "Producto",
       render: (p) => (
         <div className="min-w-0">
           <p className="font-[550]">{p.name}</p>
-          <p className="truncate text-[12px] text-ink-secondary">{[p.brand, p.model, p.location && `Ubic. ${p.location}`].filter(Boolean).join(" · ")}</p>
+          <p className="text-[12px] text-ink-secondary">
+            <span className="mr-1.5 font-mono md:hidden">{p.code}</span>
+            {[p.brand, p.model, p.location && `Ubic. ${p.location}`].filter(Boolean).join(" · ")}
+          </p>
         </div>
       ),
     },
-    { key: "cat", header: "Categoría", className: "whitespace-nowrap", render: (p) => p.category_name ? <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full" style={{ background: p.category_color ?? "#ccc" }} />{p.category_name}</span> : "—" },
+    { key: "cat", header: "Categoría", hideBelow: "lg", className: "whitespace-nowrap", render: (p) => p.category_name ? <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full" style={{ background: p.category_color ?? "#ccc" }} />{p.category_name}</span> : "—" },
     {
       key: "stock", header: "Stock", align: "right", className: "whitespace-nowrap",
       render: (p) => p.is_out ? <Badge tone="critical">Agotado</Badge>
         : <span className={p.is_low ? "font-[550] text-warning" : "tabular-nums"}>{formatStock(Number(p.stock), p.unit, p.pack_unit, Number(p.pack_size))}</span>,
     },
-    { key: "min", header: "Mínimo", align: "right", className: "whitespace-nowrap text-ink-secondary", render: (p) => formatQty(p.min_stock) },
-    ...(isAdmin ? [{ key: "cost", header: "Costo", align: "right" as const, className: "whitespace-nowrap tabular-nums", render: (p: ProductStock) => formatMoney(p.cost) }] : []),
-    { key: "price", header: "Precio", align: "right", className: "whitespace-nowrap tabular-nums", render: (p) => <>{formatMoney(p.price)}<span className="text-[11px] text-ink-tertiary"> /{p.unit}</span></> },
-    ...(isAdmin ? [{ key: "value", header: "Valor (costo)", align: "right" as const, className: "whitespace-nowrap tabular-nums", render: (p: ProductStock) => formatMoney(p.value_cost) }] : []),
-    { key: "last", header: "Última salida", className: "whitespace-nowrap text-ink-secondary", render: (p) => (p.last_exit_at ? formatShortDate(p.last_exit_at) : "—") },
+    { key: "min", header: "Mínimo", align: "right", hideBelow: "md", className: "whitespace-nowrap text-ink-secondary", render: (p) => formatQty(p.min_stock) },
+    ...(isAdmin ? [{ key: "cost", header: "Costo", align: "right" as const, hideBelow: "lg" as const, className: "whitespace-nowrap tabular-nums", render: (p: ProductStock) => formatMoney(p.cost) }] : []),
+    { key: "price", header: "Precio", align: "right", hideBelow: "sm", className: "whitespace-nowrap tabular-nums", render: (p) => <>{formatMoney(p.price)}<span className="text-[11px] text-ink-tertiary"> /{p.unit}</span></> },
+    ...(isAdmin ? [{ key: "value", header: "Valor (costo)", align: "right" as const, hideBelow: "xl" as const, className: "whitespace-nowrap tabular-nums", render: (p: ProductStock) => formatMoney(p.value_cost) }] : []),
+    { key: "last", header: "Última salida", hideBelow: "xl", className: "whitespace-nowrap text-ink-secondary", render: (p) => (p.last_exit_at ? formatShortDate(p.last_exit_at) : "—") },
   ];
 
   return (
@@ -91,12 +94,12 @@ export function ProductsPage() {
           {isAdmin && <Button variant="primary" icon={Plus} to="/productos/nuevo">Nuevo producto</Button>}
         </>
       }>
-      <div className="mb-3 flex flex-wrap items-center gap-3 px-1 text-ink-secondary">
+      <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 px-1 text-ink-secondary">
         <span><strong className="text-ink">{rows.length}</strong> productos</span>
         {isAdmin && <span>Valor a costo <strong className="text-ink tabular-nums">{formatMoney(totals.cost)}</strong></span>}
         <span>Valor a precio de venta <strong className="text-ink tabular-nums">{formatMoney(totals.price)}</strong></span>
         <Select hideLabel label="Categoría" value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }} placeholder="Todas las categorías"
-          options={categories.map((c) => ({ value: c.id, label: c.name }))} className="ml-auto w-56" />
+          options={categories.map((c) => ({ value: c.id, label: c.name }))} className="w-full sm:ml-auto sm:w-56" />
       </div>
       <IndexTable
         rows={rows.slice((page - 1) * PAGE, page * PAGE)}

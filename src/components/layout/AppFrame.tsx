@@ -14,7 +14,7 @@ export function useBusiness() {
 }
 
 const itemClass = (active: boolean, compact?: boolean) =>
-  cn("flex h-[30px] items-center gap-2 rounded-[8px] text-[13px] font-[450] transition-colors",
+  cn("flex h-10 items-center gap-2 rounded-[8px] text-[14px] font-[450] transition-colors lg:h-[30px] lg:text-[13px]",
      compact ? "w-9 justify-center" : "pr-1 pl-2",
      active ? "bg-frame-active font-[550] text-white" : "text-frame-text hover:bg-frame-hover hover:text-white");
 
@@ -105,7 +105,7 @@ export function AppFrame() {
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
-          <div className="w-[260px] bg-frame"><Sidebar onNavigate={() => setMobileOpen(false)} /></div>
+          <div className="w-[272px] max-w-[85vw] overflow-y-auto bg-frame"><Sidebar onNavigate={() => setMobileOpen(false)} /></div>
           <button type="button" aria-label="Cerrar menú" className="flex-1 bg-black/50" onClick={() => setMobileOpen(false)}>
             <X className="ml-3 size-5 text-white" />
           </button>

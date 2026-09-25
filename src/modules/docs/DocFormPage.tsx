@@ -85,6 +85,7 @@ export function DocFormPage({ kind }: { kind: Kind }) {
     <Page title={kind === "entrada" ? "Registrar entrada" : "Registrar salida"} icon={Icon} width="full"
       actions={<Button variant="primary" icon={Icon} onClick={submit} loading={register.isPending}>Guardar {kind}</Button>}>
       <Layout
+        asideFirst
         aside={
           <>
             <Card>
@@ -121,9 +122,9 @@ export function DocFormPage({ kind }: { kind: Kind }) {
                 const after = Number(p.stock) + (kind === "entrada" ? 1 : -1) * baseQty(r);
                 const isShort = short.includes(r);
                 return (
-                  <li key={r.key} className="grid items-end gap-2 py-3 sm:grid-cols-[minmax(0,1fr)_110px_150px_130px_110px_auto]">
-                    <div className="min-w-0 self-center">
-                      <p className="truncate font-[550]"><span className="mr-2 font-mono text-[12px] text-ink-tertiary">{p.code}</span>{productLabel(p)}</p>
+                  <li key={r.key} className="grid grid-cols-2 items-end gap-2 py-3 sm:grid-cols-3 2xl:grid-cols-[minmax(0,1fr)_100px_150px_130px_auto]">
+                    <div className="col-span-2 min-w-0 self-center sm:col-span-3 2xl:col-span-1">
+                      <p className="font-[550] 2xl:truncate"><span className="mr-2 font-mono text-[12px] text-ink-tertiary">{p.code}</span>{productLabel(p)}</p>
                       <p className={cn("text-[12px]", isShort ? "font-[550] text-critical-strong" : "text-ink-secondary")}>
                         Stock {formatQty(p.stock, p.unit)} → {formatQty(after, p.unit)}{isShort && " · stock insuficiente"}
                       </p>
@@ -138,9 +139,11 @@ export function DocFormPage({ kind }: { kind: Kind }) {
                     {priced ? (
                       <TextField label={`${amountLabel} por ${r.unit === "pack" ? p.pack_unit : p.unit}`} type="number" min="0" step="0.01" prefix="S/" value={r.amount}
                         onChange={(e) => update(r.key, { amount: e.target.value })} />
-                    ) : <div className="hidden sm:block" />}
-                    <p className="pb-1.5 text-right font-[550] tabular-nums">{priced ? formatMoney((Number(r.qty) || 0) * (Number(r.amount) || 0)) : `${formatQty(baseQty(r), p.unit)}`}</p>
-                    <Button variant="plain" size="icon" icon={Trash2} onClick={() => setRows(rows.filter((x) => x.key !== r.key))} className="mb-0.5">Quitar</Button>
+                    ) : <div className="hidden 2xl:block" />}
+                    <div className={cn("flex items-center justify-end gap-2 pb-0.5 2xl:min-w-[130px]", priced ? "sm:max-2xl:col-span-3" : "max-sm:col-span-2")}>
+                      <p className="font-[550] whitespace-nowrap tabular-nums">{priced ? formatMoney((Number(r.qty) || 0) * (Number(r.amount) || 0)) : `${formatQty(baseQty(r), p.unit)}`}</p>
+                      <Button variant="plain" size="icon" icon={Trash2} onClick={() => setRows(rows.filter((x) => x.key !== r.key))}>Quitar</Button>
+                    </div>
                   </li>
                 );
               })}

@@ -15,20 +15,22 @@ function RecentMovements({ productId, unit }: { productId: string; unit: string 
   const { data } = useMovements({ productId, page: 1, pageSize: 12 });
   if (!data?.rows.length) return <p className="px-4 pb-4 text-ink-secondary">Sin movimientos todavía.</p>;
   return (
+    <div className="overflow-x-auto">
     <table className="w-full border-t border-border text-left">
-      <thead><tr className="h-9 bg-surface-muted text-[12px] text-ink-secondary"><th className="pl-4">Fecha</th><th>Documento</th><th>Motivo</th><th className="text-right">Cantidad</th><th className="pr-4 text-right">Saldo</th></tr></thead>
+      <thead><tr className="h-9 bg-surface-muted text-[12px] text-ink-secondary"><th className="pl-4">Fecha</th><th className="px-3">Documento</th><th className="px-3 max-md:hidden">Motivo</th><th className="px-3 text-right">Cantidad</th><th className="pr-4 pl-3 text-right">Saldo</th></tr></thead>
       <tbody>
         {data.rows.map((m) => (
           <tr key={m.id} className="h-10 border-t border-border">
-            <td className="pl-4 whitespace-nowrap">{formatDateTime(m.created_at)}</td>
-            <td><Link to={`/movimientos/${m.doc_id}`} className="text-brand hover:underline">{kindLabels[m.kind]} #{m.doc_number}</Link>{m.voided_at && <Badge tone="critical" className="ml-1">Anulado</Badge>}</td>
-            <td className="text-ink-secondary">{reasonLabels[m.reason]}{m.party ? ` · ${m.party}` : ""}</td>
-            <td className={`text-right font-[550] tabular-nums ${Number(m.quantity) > 0 ? "text-success" : "text-critical-strong"}`}>{Number(m.quantity) > 0 ? "+" : ""}{formatQty(m.quantity)}</td>
-            <td className="pr-4 text-right tabular-nums">{formatQty(m.balance, unit)}</td>
+            <td className="pl-4 whitespace-nowrap max-sm:text-[12px]">{formatDateTime(m.created_at)}</td>
+            <td className="px-3 whitespace-nowrap"><Link to={`/movimientos/${m.doc_id}`} className="text-brand hover:underline">{kindLabels[m.kind]} #{m.doc_number}</Link>{m.voided_at && <Badge tone="critical" className="ml-1">Anulado</Badge>}</td>
+            <td className="px-3 text-ink-secondary max-md:hidden">{reasonLabels[m.reason]}{m.party ? ` · ${m.party}` : ""}</td>
+            <td className={`px-3 text-right font-[550] tabular-nums whitespace-nowrap ${Number(m.quantity) > 0 ? "text-success" : "text-critical-strong"}`}>{Number(m.quantity) > 0 ? "+" : ""}{formatQty(m.quantity)}</td>
+            <td className="pr-4 pl-3 text-right tabular-nums whitespace-nowrap">{formatQty(m.balance, unit)}</td>
           </tr>
         ))}
       </tbody>
     </table>
+    </div>
   );
 }
 

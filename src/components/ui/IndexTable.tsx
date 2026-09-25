@@ -11,7 +11,12 @@ export type Column<T> = {
   render: (row: T) => React.ReactNode;
   align?: "left" | "right" | "center";
   className?: string;
+  /** Oculta la columna por debajo de ese ancho (sm 640, md 768, lg 1024, xl 1280). */
+  hideBelow?: "sm" | "md" | "lg" | "xl";
 };
+
+const hideClass = { sm: "max-sm:hidden", md: "max-md:hidden", lg: "max-lg:hidden", xl: "max-xl:hidden" } as const;
+const visible = <T,>(c: Column<T>) => c.hideBelow && hideClass[c.hideBelow];
 
 type Props<T> = {
   rows: T[];
@@ -60,7 +65,7 @@ export function IndexTable<T>({ rows, columns, getId, loading, selectable = true
                 </th>
               ) : (
                 columns.map((c) => (
-                  <th key={c.key} className={cn("px-3 font-medium whitespace-nowrap first:pl-3.5", c.align === "right" && "text-right", c.align === "center" && "text-center")}>
+                  <th key={c.key} className={cn("px-3 font-medium whitespace-nowrap first:pl-3.5 last:pr-3.5", c.align === "right" && "text-right", c.align === "center" && "text-center", visible(c))}>
                     {c.header}
                   </th>
                 ))
@@ -73,7 +78,7 @@ export function IndexTable<T>({ rows, columns, getId, loading, selectable = true
                   <tr key={i} className="h-12 border-b border-border last:border-0">
                     {selectable && <td className="pl-3.5"><Skeleton className="size-3.5" /></td>}
                     {columns.map((c) => (
-                      <td key={c.key} className="px-3"><Skeleton className="h-3 w-3/4" /></td>
+                      <td key={c.key} className={cn("px-3", visible(c))}><Skeleton className="h-3 w-3/4" /></td>
                     ))}
                   </tr>
                 ))
@@ -92,7 +97,7 @@ export function IndexTable<T>({ rows, columns, getId, loading, selectable = true
                         </td>
                       )}
                       {columns.map((c) => (
-                        <td key={c.key} className={cn("px-3 py-1.5 first:pl-3.5", c.align === "right" && "text-right", c.align === "center" && "text-center", c.className)}>
+                        <td key={c.key} className={cn("px-3 py-1.5 first:pl-3.5 last:pr-3.5", c.align === "right" && "text-right", c.align === "center" && "text-center", c.className, visible(c))}>
                           {c.render(row)}
                         </td>
                       ))}
@@ -104,7 +109,7 @@ export function IndexTable<T>({ rows, columns, getId, loading, selectable = true
       </div>
       {!loading && rows.length === 0 && empty}
       {pagination && pagination.total > pagination.pageSize && (
-        <div className="flex items-center justify-between border-t border-border bg-surface-muted px-3.5 py-2 text-[12px] text-ink-secondary">
+        <div className="flex items-center justify-between gap-3 border-t border-border bg-surface-muted px-3.5 py-2 text-[12px] text-ink-secondary">
           <span>
             {(pagination.page - 1) * pagination.pageSize + 1}–{Math.min(pagination.page * pagination.pageSize, pagination.total)} de {pagination.total} {resourceName.plural}
           </span>

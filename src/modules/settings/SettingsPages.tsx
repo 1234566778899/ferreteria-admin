@@ -69,11 +69,11 @@ export function UsersSettingsPage() {
             {data.map((s) => {
               const self = s.user_id === me.user_id;
               return (
-                <li key={s.user_id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-                  <span className="grid size-9 place-items-center rounded-[10px] bg-surface-pressed text-[12px] font-[650]">{(fullName(s.first_name, s.last_name) || s.email).slice(0, 2).toUpperCase()}</span>
+                <li key={s.user_id} className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-surface-pressed text-[12px] font-[650]">{(fullName(s.first_name, s.last_name) || s.email).slice(0, 2).toUpperCase()}</span>
                   <div className="min-w-0 flex-1">
                     <p className="font-[550]">{fullName(s.first_name, s.last_name) || "Sin nombre"} {self && <span className="text-ink-tertiary">(tú)</span>}</p>
-                    <p className="text-[12px] text-ink-secondary">{s.email} · desde {formatDate(s.created_at)}</p>
+                    <p className="text-[12px] break-all text-ink-secondary">{s.email} · desde {formatDate(s.created_at)}</p>
                   </div>
                   {s.is_active ? <Badge tone="success">Activo</Badge> : <Badge tone="warning">Pendiente</Badge>}
                   <Select hideLabel label="Rol" value={s.role} disabled={self} className="w-36"
@@ -157,7 +157,7 @@ export function SuppliersSettingsPage() {
             {data.map((s) => (
               <li key={s.id}>
                 <button type="button" onClick={() => setEditing(s)} className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-surface-muted">
-                  <span className="flex-1"><span className="block font-[550]">{s.name}</span><span className="text-[12px] text-ink-secondary">{[s.ruc && `RUC ${s.ruc}`, s.contact, s.phone, s.email].filter(Boolean).join(" · ")}</span></span>
+                  <span className="min-w-0 flex-1"><span className="block font-[550]">{s.name}</span><span className="text-[12px] text-ink-secondary">{[s.ruc && `RUC ${s.ruc}`, s.contact, s.phone, s.email].filter(Boolean).join(" · ")}</span></span>
                 </button>
               </li>
             ))}
@@ -166,8 +166,8 @@ export function SuppliersSettingsPage() {
       </Card>
       <Modal open={Boolean(editing)} onClose={() => setEditing(null)} title={editing?.id ? "Editar proveedor" : "Nuevo proveedor"}
         primaryAction={{ label: "Guardar", loading: save.isPending, disabled: !editing?.name?.trim(), onClick: () => editing && save.mutate(editing) }}>
-        <div className="grid grid-cols-2 gap-3">
-          <TextField label="Razón social" className="col-span-2" {...f("name")} />
+        <div className="grid gap-3 sm:grid-cols-2">
+          <TextField label="Razón social" className="sm:col-span-2" {...f("name")} />
           <TextField label="RUC" {...f("ruc")} />
           <TextField label="Teléfono" {...f("phone")} />
           <TextField label="Contacto" {...f("contact")} />

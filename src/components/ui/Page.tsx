@@ -33,7 +33,7 @@ export function Page({ icon: Icon, title, breadcrumbs, largeTitle, titleMeta, su
         <nav aria-label="Migas" className="flex min-w-0 items-center gap-1.5 text-[13px]">
           {Icon && <Icon className="size-4 shrink-0 text-ink" strokeWidth={1.8} />}
           {breadcrumbs?.map((b) => (
-            <span key={b.to} className="flex items-center gap-1.5">
+            <span key={b.to} className="flex items-center gap-1.5 max-sm:hidden">
               <Link to={b.to} className="text-ink-secondary hover:text-ink">
                 {b.label}
               </Link>
@@ -42,7 +42,7 @@ export function Page({ icon: Icon, title, breadcrumbs, largeTitle, titleMeta, su
           ))}
           <span className="truncate font-medium text-ink">{title}</span>
         </nav>
-        {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
+        {actions && <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 max-sm:[&_[data-collapsible]]:sr-only">{actions}</div>}
       </header>
 
       <div className={cn("w-full flex-1 px-4 pb-16", width === "full" ? "pt-1" : "mx-auto pt-3", width === "default" && "max-w-[1120px]", width === "narrow" && "max-w-[800px]")}>
@@ -59,12 +59,12 @@ export function Page({ icon: Icon, title, breadcrumbs, largeTitle, titleMeta, su
   );
 }
 
-/** Columna principal (760) + lateral (280) de los formularios. */
-export function Layout({ children, aside }: { children: React.ReactNode; aside?: React.ReactNode }) {
+/** Columna principal + lateral (300) de los formularios. `asideFirst`: en pantallas angostas el lateral va arriba. */
+export function Layout({ children, aside, asideFirst }: { children: React.ReactNode; aside?: React.ReactNode; asideFirst?: boolean }) {
   return (
     <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6">
       <div className="min-w-0 space-y-4">{children}</div>
-      {aside && <div className="space-y-4">{aside}</div>}
+      {aside && <div className={cn("min-w-0 space-y-4", asideFirst && "max-lg:order-first")}>{aside}</div>}
     </div>
   );
 }
