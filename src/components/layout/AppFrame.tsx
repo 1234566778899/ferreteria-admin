@@ -54,7 +54,7 @@ function Sidebar({ compact, onNavigate }: { compact?: boolean; onNavigate?: () =
       ) : (
         <>
           <Link to="/" className={cn("mb-4 flex h-8 items-center gap-2", compact ? "justify-center" : "px-1")} title={business?.name}>
-            <img src="/favicon.svg" alt="" className="size-7 shrink-0" />
+            <img src="/icon.png" alt="" className="size-7 shrink-0 rounded-[7px] bg-white" />
             {!compact && <span className="truncate text-[14px] font-[650] text-white">{business?.name ?? "Ferretería"}</span>}
           </Link>
           <NavSection items={mainNav} compact={compact} />
@@ -117,7 +117,7 @@ export function AppFrame() {
           <button type="button" aria-label="Abrir menú" onClick={() => setMobileOpen(true)} className="grid size-8 place-items-center rounded-[8px] text-white hover:bg-frame-hover">
             <Menu className="size-5" />
           </button>
-          <img src="/favicon.svg" alt="" className="size-7" />
+          <img src="/icon.png" alt="" className="size-7 rounded-[7px] bg-white" />
           <span className="truncate text-[14px] font-[650] text-white">{business?.name ?? "Ferretería"}</span>
         </div>
         <main className={cn("min-h-0 flex-1 rounded-t-[16px] bg-surface lg:rounded-[16px]", compact ? "overflow-hidden" : "overflow-y-auto")}>

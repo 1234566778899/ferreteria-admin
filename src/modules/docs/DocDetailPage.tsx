@@ -34,6 +34,8 @@ export function DocDetailPage() {
           {isAdmin && !doc.voided_at && doc.reason !== "conteo" && <Button variant="critical" icon={Ban} onClick={() => setVoiding(true)}>Anular</Button>}
         </>
       }>
+      {/* Encabezado solo al imprimir */}
+      <img src="/logo.png" alt={business?.name ?? ""} className="mb-4 hidden h-14 w-auto print:block" />
       {doc.voided_at && <div className="mb-4"><Banner tone="critical" title="Documento anulado">{formatDateTime(doc.voided_at)} · {doc.void_reason}. El stock se revirtió con un ajuste.</Banner></div>}
       <Layout
         aside={
