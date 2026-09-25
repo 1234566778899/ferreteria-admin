@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Banner, Button, TextField } from "@/components/ui";
 import { supabase } from "@/lib/supabase";
+import { useAuth } from "./AuthProvider";
 import { AuthScreen } from "./AuthScreen";
 
 type Mode = "sign-in" | "sign-up" | "reset";
 
 export function LoginPage() {
+  const { refresh } = useAuth();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +28,12 @@ export function LoginPage() {
         : mode === "sign-up"
           ? await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } })
           : await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin });
+    if (!res.error && mode === "sign-in") {
+      // Entra a la pantalla de inicio; el botón sigue cargando hasta que AccessGate muestre la app.
+      navigate("/", { replace: true });
+      await refresh();
+      return;
+    }
     setLoading(false);
     if (res.error) {
       setError(/Invalid login/i.test(res.error.message) ? "Correo o contraseña incorrectos." : /confirm/i.test(res.error.message) ? "Confirma tu correo antes de ingresar (revisa tu bandeja)." : res.error.message);

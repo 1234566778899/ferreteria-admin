@@ -1,5 +1,5 @@
 import type { Session } from "@supabase/supabase-js";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Staff } from "@/lib/types";
 
@@ -31,9 +31,13 @@ async function resolveAccess(session: Session): Promise<AuthState> {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: "loading" });
+  // Solo aplica la última carga: una respuesta vieja (p. ej. "sin sesión") no debe pisar a la nueva.
+  const loadSeq = useRef(0);
 
   const load = useCallback(async (session: Session | null) => {
-    setState(session ? await resolveAccess(session) : { status: "signed-out" });
+    const seq = ++loadSeq.current;
+    const next: AuthState = session ? await resolveAccess(session) : { status: "signed-out" };
+    if (seq === loadSeq.current) setState(next);
   }, []);
 
   useEffect(() => {
@@ -50,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refresh: async () => load((await supabase.auth.getSession()).data.session),
     signOut: async () => {
       await supabase.auth.signOut();
+      loadSeq.current++;
       setState({ status: "signed-out" });
     },
   };
